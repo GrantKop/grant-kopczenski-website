@@ -1,22 +1,256 @@
+
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <link rel="stylesheet" href="/components/css/bundle.css">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
 
-  <title>Grant Kopczenski | Project Portfolio | Photograph Album</title>
-  <style>
-    html, body { height: 100%; margin: 0; overflow: hidden; background: #000; }
-    #bg { position: fixed; inset: 0; z-index: 0; background: #000; }
-  </style>
+  <title>
+    Grant Kopczenski | Project Portfolio | Photograph Album
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="/components/css/bundle.css"
+  />
 </head>
+
 <body>
-  <div id="bg"></div>
+
+  <div class="gk-page-content">
+
+    <!-- =====================================
+         NAVIGATION
+    ====================================== -->
+
+    <header id="site-navigation"></header>
+
+    <!-- =====================================
+         FULLSCREEN HERO / SHOWCASE
+    ====================================== -->
+
+    <section
+      class="gk-showcase-panel"
+      aria-label="Image showcase"
+    >
+      <div
+        id="bg"
+        class="gk-showcase-panel__background"
+        aria-hidden="true"
+      ></div>
+    </section>
+
+    <!-- =====================================
+         SOCIAL ICON BAND
+    ====================================== -->
+
+    <section
+      class="gk-social-band"
+      aria-label="Social links"
+    >
+      <div class="gk-social-band__inner">
+
+        <a
+          href="mailto:grant.kop9@gmail.com"
+          title="Email"
+          aria-label="Email"
+        >
+          <i class="fas fa-envelope"></i>
+        </a>
+
+        <a
+          href="https://www.instagram.com/grant.kopczenski/"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Instagram"
+          aria-label="Instagram"
+        >
+          <i class="fab fa-instagram"></i>
+        </a>
+
+        <a
+          href="https://www.linkedin.com/in/grant-kopczenski/"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="LinkedIn"
+          aria-label="LinkedIn"
+        >
+          <i class="fab fa-linkedin"></i>
+        </a>
+
+        <a
+          href="https://github.com/GrantKop"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="GitHub"
+          aria-label="GitHub"
+        >
+          <i class="fab fa-github"></i>
+        </a>
+
+        <a
+          href="https://discord.com/users/private_boi"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Discord"
+          aria-label="Discord"
+        >
+          <i class="fab fa-discord"></i>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+    <main id="main-content">
+
+      <!-- PROJECTS -->
+
+      <section
+        id="projects"
+        class="gk-home-section gk-home-projects"
+        aria-labelledby="projects-heading"
+      >
+        <div class="gk-home-section__inner">
+
+          <div class="gk-home-section__heading">
+            <h2 id="projects-heading">Projects</h2>
+            <p>
+              Software, hardware, and everything in between.
+            </p>
+          </div>
+
+          <div
+            id="projects-view"
+            class="gk-home-projects__view"
+            aria-live="polite"
+          ></div>
+
+        </div>
+      </section>
+
+      <!-- PHOTOGRAPHY -->
+
+      <section
+        id="photos"
+        class="gk-home-section gk-home-photos"
+        aria-labelledby="photos-heading"
+      >
+        <div class="gk-home-section__inner">
+
+          <div class="gk-home-section__heading">
+            <h2 id="photos-heading">Photography</h2>
+            <p>Photo albums and selected work.</p>
+          </div>
+
+          <div id="photos-content"></div>
+
+        </div>
+      </section>
+
+      <!-- 3D PRINTS -->
+
+      <section
+        id="prints"
+        class="gk-home-section gk-home-prints"
+        aria-labelledby="prints-heading"
+      >
+        <div class="gk-home-section__inner">
+
+          <div class="gk-home-section__heading">
+            <h2 id="prints-heading">3D Prints</h2>
+            <p>3D designs, prints, and files.</p>
+          </div>
+
+          <div id="prints-content"></div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- =====================================
+         FOOTER
+    ====================================== -->
+
+    <footer class="site-footer">
+      <p>
+        © 2025-<span id="footer-year"></span>
+        Grant Kopczenski. All rights reserved.
+      </p>
+    </footer>
+
+  </div>
+
+  <!-- =====================================
+       NAVIGATION & CONTENT
+  ====================================== -->
 
   <script type="module">
-    import { startShowcase } from "/components/js/gk-image-showcase.js";
+    import {
+      mountPopupMenu
+    } from "/components/js/gk-snackbar.js";
+
+    import {
+      mountHomeProjects
+    } from "/components/js/gk-home-projects.js";
+
+    import {
+      PANELS
+    } from "/components/js/gk-panels.js";
+
+    import {
+      renderPanelByType
+    } from "/components/js/gk-panel-renderers.js";
+
+    mountPopupMenu({
+      parent: document.getElementById("site-navigation"),
+      delayMs: 850,
+      title: "Grant Kopczenski",
+      subtitle:
+        "Software Developer | Photographer | 3D Printer",
+      subtitleSecondary:
+        "Project Portfolio | Photograph Album",
+      subtitleCycleMs: 8000,
+      subtitleFirstCycleMs: 5500,
+    });
+
+    mountHomeProjects({
+      parent: document.getElementById("projects-view"),
+      panels: PANELS,
+      renderPanel: renderPanelByType,
+      initialPanelId: "home_projects_all",
+    });
+
+    renderPanelByType(PANELS.home_photos, {
+      panelEl: document.getElementById("photos-content"),
+      panel: null,
+    });
+
+    renderPanelByType(PANELS.home_prints, {
+      panelEl: document.getElementById("prints-content"),
+      panel: null,
+    });
+
+    document.getElementById("footer-year").textContent =
+      new Date().getFullYear();
+  </script>
+
+  <!-- =====================================
+       IMAGE SHOWCASE
+  ====================================== -->
+
+  <script type="module">
+    import {
+      startShowcase
+    } from "/components/js/gk-image-showcase.js";
 
     await startShowcase({
       parent: document.getElementById("bg"),
@@ -29,34 +263,5 @@
     });
   </script>
 
-  <script type="module">
-    import { mountPopupMenu } from "/components/js/gk-snackbar.js";
-    import { openMenuFromHash } from "/components/js/gk-open-hash.js";
-  
-    const menu = mountPopupMenu({
-      delayMs: 850,
-      title: "Grant Kopczenski",
-      subtitle: "Software Developer | Photographer | 3D Printer",
-      subtitleSecondary: "Project Portfolio | Photograph Album",
-      subtitleCycleMs: 8000,
-      subtitleFirstCycleMs: 5500,
-      buttons: [
-        { id: "Projects-All", label: "Projects", title: "Software Projects", panelId: "home_projects_all" },
-        { id: "Photos", label: "Photos", title: "Photo Album", panelId: "home_photos" },
-        { id: "3D-Prints", label: "3D Prints", title: "3D Designs and Files", panelId: "home_prints" },
-      ],
-    });
-
-    openMenuFromHash({
-      menuEl: menu.el,
-      map: {
-        "#projects": "Projects-All",
-        "#photos": "Photos",
-        "#prints": "3D-Prints",
-      },
-    });
-  </script>
-  <script type="module" src="/components/js/gk-mobile-alert.js"></script>
 </body>
-
 </html>

@@ -1,611 +1,302 @@
 :root {
-    --gk-popup-h:       105px;
-    --gk-popup-h-hover: 160px;
-    --gk-popup-bg:      rgba(10, 12, 18, 0.55);
-    --gk-popup-bg-hover:rgba(10, 12, 18, 0.88);
-    --gk-popup-border:  rgba(255, 255, 255, 0.14);
-    --gk-popup-text:    rgba(255, 255, 255, 0.92);
-    --gk-popup-muted:   rgba(255, 255, 255, 0.72);
-    --gk-popup-shadow:  0 18px 55px rgba(0,0,0,0.40);
+  --gk-popup-bg: rgba(10, 12, 18, 0.72);
+  --gk-popup-border: rgba(255, 255, 255, 0.14);
+  --gk-popup-text: rgba(255, 255, 255, 0.95);
+  --gk-popup-muted: rgba(255, 255, 255, 0.76);
+  --gk-popup-shadow: 0 18px 55px rgba(0, 0, 0, 0.40);
 
-    --gk-popup-text-duration: 1600ms;
-    --gk-popup-title-delay: 750ms;
-    --gk-popup-subtitle-delay: 800ms;
-
-    --gk-dock-ease: cubic-bezier(.22, 1, .36, 1);
-    --gk-dock-duration: 620ms;
-
-    --gk-vh: 100vh;
-    --gk-popup-dock-shift: calc(-1 * (var(--gk-vh) - var(--gk-popup-h)));
-
-    --gk-popup-left-nudge: 22px;
-
-    --gk-popup-nav-delay: 850ms;
-    --gk-popup-nav-duration: 1450ms;
-
-    --gk-popup-nav-raise: -9px;
-
-    --gk-popup-btn-scale: 2;
+  --gk-popup-text-duration: 1600ms;
 }
 
-@supports (height: 100dvh) {
-    :root { --gk-vh: 100dvh; }
+/* The wrapper must be sticky, not the snackbar inside it. */
+#site-navigation {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
 }
 
-.gk-popup-shell {
-    position: fixed;
-    isolation: isolate;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: var(--gk-vh);
-    z-index: 10;
-
-    --gk-shell-y:       calc(var(--gk-vh) - var(--gk-popup-h));
-    --gk-shell-y-hover: calc(var(--gk-vh) - var(--gk-popup-h-hover));
-
-    --gk-menu-h: var(--gk-popup-h);
-
-    transform: translateY(var(--gk-shell-y));
-    transition: transform var(--gk-dock-duration) var(--gk-dock-ease);
-
-    pointer-events: none;
-    user-select: none;
-}
-.gk-popup-shell[data-expanded="1"]:not([data-docked="1"]) {
-  --gk-menu-h: var(--gk-popup-h-hover);
-  transform: translateY(var(--gk-shell-y-hover));
-}
-.gk-popup-shell[data-docked="1"] {
-    transform: translateY(0);
-}
+/* Navbar */
 
 .gk-snackbar {
-    --gk-header-out-ms: 460ms;
-    --gk-header-in-ms: 780ms;
-    --gk-header-shift: 18px;
-    
-    height: var(--gk-popup-h);
-    position: relative;
-    z-index: 2;
-    transition: height var(--gk-dock-duration) var(--gk-dock-ease);
-}
-.gk-popup-shell[data-expanded="1"]:not([data-docked="1"]) .gk-snackbar {
-    height: var(--gk-popup-h-hover);
-}
-.gk-popup-shell[data-docked="1"] .gk-snackbar {
-    height: var(--gk-popup-h);
-    background: var(--gk-popup-bg-hover);
-    box-shadow: var(--gk-popup-shadow);
+  position: relative;
+  width: 100%;
+  color: var(--gk-popup-text);
+  background: rgba(8, 10, 18, 0.82);
+  border-bottom: 1px solid var(--gk-popup-border);
+  box-shadow: var(--gk-popup-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+  opacity: 1;
+  transform: translateY(0);
+
+  transition:
+    opacity 500ms ease,
+    transform 700ms cubic-bezier(.22, 1, .36, 1),
+    background-color 620ms ease,
+    border-color 620ms ease,
+    box-shadow 620ms ease;
 }
+
 .gk-snackbar[data-state="hidden"] {
-    opacity: 0;
-    transform: translateY(28px);
+  opacity: 0;
+  transform: translateY(-110%);
 }
+
 .gk-snackbar[data-state="visible"] {
-    pointer-events: auto;
-}
-.gk-popup-shell[data-docked="1"] .gk-snackbar[data-state="visible"] .gk-snackbar__inner,
-.gk-popup-shell[data-docked="1"] .gk-snackbar[data-state="visible"] .gk-snackbar__navrow {
-    animation: none !important;
-    opacity: 1;
-    transform: none;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .gk-snackbar__inner {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
-    padding: 18px clamp(16px, 4vw, 40px);
-    position: relative;
-    box-sizing: border-box;
+  width: min(100%, 1500px);
+  min-height: 100px;
+  margin: 0 auto;
+  padding: 17px clamp(22px, 4vw, 52px);
+  box-sizing: border-box;
 
-    z-index: 2;
-
-    background: var(--gk-popup-bg);
-    border-top: 1px solid var(--gk-popup-border);
-    box-shadow: var(--gk-popup-shadow);
-
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-
-    transition: background-color 620ms ease, border-color 620ms ease, box-shadow 620ms ease;
-    will-change: background-color;
-}
-.gk-snackbar[data-state="visible"][data-intro="1"] .gk-snackbar__inner {
-    animation: gkPopupInnerEnter 650ms ease both;
-}
-@keyframes gkPopupInnerEnter {
-    from { opacity: 0; transform: translateY(28px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-.gk-popup-shell[data-expanded="1"]:not([data-docked="1"]) .gk-snackbar__inner {
-    background: var(--gk-popup-bg-hover);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
 }
 
-.gk-snackbar__left {
-    min-width: 240px;
-    display: grid;
-    gap: 6px;
-    transform: translateY(var(--gk-popup-left-nudge));
-    transition: transform 420ms ease; 
+.gk-snackbar__identity {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
 }
-.gk-popup-shell[data-expanded="1"]:not([data-docked="1"]) .gk-snackbar__left {
-    transform: translateY(calc(var(--gk-popup-left-nudge) - 26px));
-}
+
+/* Larger identity text */
+
 .gk-snackbar__title {
-    color: var(--gk-popup-text);
-    font-weight: 800;
-    letter-spacing: -0.01em;
-    font-size: clamp(32px, 2.8vw, 50px);
-
-    opacity: 0;
-    transform: translateY(6px);
-    animation-name: gkPopupText;
-    animation-duration: var(--gk-popup-text-duration);
-    animation-timing-function: ease;
-    animation-fill-mode: forwards;
-    animation-delay: var(--gk-popup-title-delay);
+  color: var(--gk-popup-text);
+  font-size: clamp(1.45rem, 2.5vw, 1.85rem);
+  line-height: 1.15;
+  font-weight: 750;
+  letter-spacing: .015em;
+  white-space: nowrap;
 }
 
 .gk-snackbar__subtitle-wrap {
-    position: relative;
-    height: 24px;
-    overflow: visible;
-
-    opacity: 0;
-    transform: translateY(6px);
-    animation-name: gkPopupText;
-    animation-duration: var(--gk-popup-text-duration);
-    animation-timing-function: ease;
-    animation-fill-mode: forwards;
-    animation-delay: var(--gk-popup-subtitle-delay);
-}
-
-@keyframes gkPopupText {
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.gk-snackbar__title,
-.gk-snackbar__subtitle-wrap {
-    will-change: transform, opacity, filter;
-}
-.gk-snackbar[data-header-anim="out"] .gk-snackbar__title,
-.gk-snackbar[data-header-anim="out"] .gk-snackbar__subtitle-wrap {
-    opacity: 0 !important;
-    transform: translateX(calc(-1 * var(--gk-header-shift))) !important;
-    transition: opacity var(--gk-header-out-ms) ease, transform var(--gk-header-out-ms) ease;
-}
-.gk-snackbar[data-header-anim="idle"] .gk-snackbar__title,
-.gk-snackbar[data-header-anim="idle"] .gk-snackbar__subtitle-wrap {
-    opacity: 1 !important;
-    transform: translate3d(0,0,0) !important;
-}
-.gk-snackbar[data-header-anim="in"] .gk-snackbar__title,
-.gk-snackbar[data-header-anim="in"] .gk-snackbar__subtitle-wrap {
-    opacity: 1 !important;
-    transform: translateX(0) !important;
-    transition: opacity var(--gk-header-in-ms) ease, transform var(--gk-header-in-ms) ease;
-}
-.gk-snackbar[data-header-big="1"] .gk-snackbar__title {
-    transform-origin: left center;
-    font-size: clamp(26px, 3.05vw, 54px);
-}
-.gk-snackbar[data-header-anim] .gk-snackbar__title,
-.gk-snackbar[data-header-anim] .gk-snackbar__subtitle-wrap {
-    animation: none !important;
-}
-.gk-snackbar__title,
-.gk-snackbar__subtitle-wrap {
-    transition: opacity var(--gk-header-in-ms) ease, transform var(--gk-header-in-ms) ease;
+  position: relative;
+  display: grid;
+  min-height: 1.35em;
+  overflow: hidden;
 }
 
 .gk-snackbar__subtitle {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    color: var(--gk-popup-muted);
-    font-size: clamp(14px, 1.2vw, 20px);
-    line-height: 24px;
-    white-space: nowrap;
+  grid-area: 1 / 1;
+  color: var(--gk-popup-muted);
+  font-size: clamp(.9rem, 1.3vw, 1.05rem);
+  line-height: 1.3;
+  font-weight: 450;
+  white-space: nowrap;
 
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity 350ms ease, transform 700ms ease;
+  transition:
+    opacity var(--gk-popup-text-duration) ease,
+    transform var(--gk-popup-text-duration) ease;
 }
-.gk-snackbar[data-subtitle="a"] .gk-snackbar__subtitle:not(.gk-snackbar__subtitle--secondary) {
-    opacity: 1;
-    transform: translateY(0);
+
+.gk-snackbar__subtitle--secondary {
+  opacity: 0;
+  transform: translateY(12px);
 }
+
+/* Subtitle cycling */
+
+.gk-snackbar[data-subtitle="b"] .gk-snackbar__subtitle:not(
+  .gk-snackbar__subtitle--secondary
+) {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+
 .gk-snackbar[data-subtitle="b"] .gk-snackbar__subtitle--secondary {
-    opacity: 1;
-    transform: translateY(0);
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.gk-snackbar__right {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    min-width: 240px;
-    padding-bottom: 0px;
-}
+/* Navigation links */
 
 .gk-snackbar__nav {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-
-    padding-right: 0px;
-    padding-top: 7px;
-
-    gap: 40px;
-    row-gap: 14px;
-}
-.gk-snackbar[data-state="visible"] .gk-snackbar__nav {
-    animation-fill-mode: both;
-    animation: gkPopupNavEnterNoRaise var(--gk-popup-nav-duration) ease both;
-    animation-delay: var(--gk-popup-nav-delay);
-}
-@keyframes gkPopupNavEnterNoRaise {
-  from { opacity: 0; transform: translate3d(28px, 0, 0); }
-  to   { opacity: 1; transform: translate3d(0, 0, 0); }
-}
-
-.gk-snackbar__navrow {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 36px;
-
-  padding-right: 0px;
-  padding-top: 2px;
-
-  opacity: 0;
-  transform: translate3d(28px, 0, 0);
-  will-change: opacity, transform;
-}
-.gk-snackbar[data-state="visible"][data-intro="1"] .gk-snackbar__navrow {
-  animation: gkPopupNavEnterNoRaise var(--gk-popup-nav-duration) ease both;
-  animation-delay: var(--gk-popup-nav-delay);
-}
-.gk-snackbar[data-state="visible"] .gk-snackbar__navrow {
-  opacity: 1;
-  transform: translate3d(0,0,0);
-}
-
-.gk-snackbar__more {
-  pointer-events: auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
-
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.92);
-
-  cursor: pointer;
-
-  transition: opacity 220ms ease, transform 220ms ease, background 150ms ease, border-color 150ms ease;
-}
-.gk-snackbar__more:hover {
-  background: rgba(255,255,255,0.10);
-  border-color: rgba(255,255,255,0.24);
-  transform: translateY(-1px);
-}
-.gk-snackbar__more:active {
-  background: rgba(255,255,255,0.14);
-  border-color: rgba(255,255,255,0.32);
-  transform: translateY(0);
-}
-.gk-snackbar__more:focus-visible {
-  outline: 2px solid rgba(124,92,255,0.65);
-  outline-offset: 6px;
-}
-.gk-popup-shell[data-docked="1"] .gk-snackbar__more {
-  opacity: 0;
-  transform: translateY(6px);
-  pointer-events: none;
-}
-
-.gk-snackbar__footer {
-    position: absolute;
-    right: clamp(16px, 4vw, 40px);
-    bottom: 10px;
-
-    font-size: clamp(14px, 2.1vw, 16px);
-    line-height: 1.1;
-    color: rgba(255,255,255,0.58);
-    white-space: nowrap;
-
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity 220ms ease, transform 220ms ease;
-
-    pointer-events: none;
-}
-.gk-popup-shell[data-expanded="1"]:not([data-docked="1"]) .gk-snackbar__footer {
-    opacity: 1;
-    transform: translateY(0);
+  gap: clamp(16px, 2vw, 30px);
+  flex-shrink: 0;
 }
 
 .gk-snackbar__btn {
-  color: var(--gk-popup-text);
-  text-decoration: none;
-
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  border-radius: 0;
-
-  font-size: clamp(26px, 2.5vw, 42px);
-
-  padding: 0;     
-  line-height: 1.1;
-  letter-spacing: 0.4px;
-
+  position: relative;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  padding: 10px 3px;
 
-  transform: none;
-  transition: color 150ms ease, opacity 150ms ease;
+  color: var(--gk-popup-muted);
+  font-size: 1rem;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
 }
+
+.gk-snackbar__btn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 3px;
+  height: 2px;
+  border-radius: 2px;
+
+  background: linear-gradient(90deg, #7c3aed, #22d3ee);
+
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 220ms ease;
+}
+
 .gk-snackbar__btn:hover {
-  transform: translateY(-1px);
-  color: rgba(255,255,255,1);
-
-  background: transparent;
-  border-color: transparent;
-  cursor: pointer;
-
-  opacity: 0.9;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  text-decoration-color: rgba(255,255,255,.9);
-}
-.gk-snackbar__btn:active,
-.gk-snackbar__btn.is-active,
-.gk-snackbar__btn.is-active:hover,
-.gk-snackbar__btn:focus-visible,
-.gk-snackbar__btn.is-primary {
-  transform: translateY(-1px);
-  color: rgba(255,255,255,1);
-  text-shadow:
-    0 0 8px rgba(255,255,255,0.22),
-    0 0 18px rgba(255,255,255,0.06);
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  outline: none;
-  opacity: 1;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  text-decoration-color: rgba(255,255,255,.9);
+  color: #fff;
+  transform: translateY(-2px);
 }
 
-.gk-snackbar__icons {
-    display: flex;
-    gap: 12px;
-    margin-top: 4px;
+.gk-snackbar__btn:hover::after,
+.gk-snackbar__btn:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.gk-snackbar__btn:focus-visible {
+  outline: 2px solid #a78bfa;
+  outline-offset: 5px;
+  border-radius: 4px;
+}
+
+/* Text entrance animations.
+   These now run when the navbar becomes visible, not when it is
+   initially inserted into the DOM while hidden. */
+
+.gk-snackbar[data-state="visible"][data-intro="1"] .gk-snackbar__title {
+  animation: gk-nav-title-in 1100ms cubic-bezier(.16, 1, .3, 1) both;
+}
+
+.gk-snackbar[data-state="visible"][data-intro="1"] .gk-snackbar__subtitle-wrap {
+  animation: gk-nav-subtitle-in 1250ms cubic-bezier(.16, 1, .3, 1) 180ms both;
+}
+
+.gk-snackbar[data-state="visible"][data-intro="1"] .gk-snackbar__nav {
+  animation: gk-nav-links-in 1250ms cubic-bezier(.16, 1, .3, 1) 350ms both;
+}
+
+@keyframes gk-nav-title-in {
+  from {
     opacity: 0;
-    transform: translateY(2px);
-    transition: opacity 620ms ease, transform 620ms ease;
-    pointer-events: none;
-}
-.gk-popup-shell[data-expanded="1"]:not([data-docked="1"]) .gk-snackbar__icons {
+    transform: translateY(-28px);
+    filter: blur(5px);
+  }
+
+  to {
     opacity: 1;
     transform: translateY(0);
-    pointer-events: auto;
-}
-.gk-popup-shell[data-docked="1"] .gk-snackbar__icons{
-  opacity: 0;
-  transform: translateY(6px);
-  pointer-events: none;
-
-  transition: opacity 120ms ease, transform 120ms ease;
+    filter: blur(0);
+  }
 }
 
-.gk-snackbar__icons a {
-    color: var(--gk-popup-text);
-    text-decoration: none;
-    font-size: 20px;
-    line-height: 1;
-    padding: 10px 12px;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.14);
-    background: rgba(255,255,255,0.06);
-    transition: transform 150ms ease, background 150ms ease, border-color 150ms ease;
-}
-.gk-snackbar__icons a:hover {
-    transform: translateY(-1px);
-    background: rgba(255,255,255,0.10);
-    border-color: rgba(255,255,255,0.24);
-}
-
-.gk-snackbar__btn:active,
-.gk-snackbar__icons a:active {
-    background: rgba(255,255,255,0.14);
-    border-color: rgba(255,255,255,0.32);
-    transform: translateY(0);
-    filter: brightness(1.05);
-}
-.gk-snackbar__btn.is-active,
-.gk-snackbar__btn.is-active:hover {
-    background: rgba(255,255,255,0.14);
-    border-color: rgba(255,255,255,0.32);
-    transform: translateY(0);
-}
-
-@media (max-width: 720px) {
-  :root {
-    --gk-popup-h: 112px;
-    --gk-popup-h-hover: 188px;
-    --gk-popup-btn-scale: 1;
-    --gk-popup-left-nudge: 0px;
-    --gk-popup-nav-raise: 0px;
+@keyframes gk-nav-subtitle-in {
+  from {
+    opacity: 0;
+    transform: translateY(-18px);
+    filter: blur(4px);
   }
 
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
 
-  .gk-popup-shell[data-docked="1"] .gk-snackbar {
-    height: var(--gk-popup-h) !important;
+@keyframes gk-nav-links-in {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
   }
 
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+
+@media (max-width: 760px) {
   .gk-snackbar__inner {
-    height: 100%;
-    align-items: flex-start;
-    padding: 12px 14px 18px;
-    background: var(--gk-popup-bg-hover);
-  }
-
-  .gk-popup-shell[data-docked="1"] .gk-snackbar__inner {
-    background: var(--gk-popup-bg);
-  }
-
-  .gk-snackbar__left {
-    min-width: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-self: stretch;
-    transform: none !important;
+    min-height: 88px;
+    padding: 14px 20px;
+    gap: 16px;
   }
 
   .gk-snackbar__title {
-    font-size: clamp(18px, 5.5vw, 28px);
-    line-height: 1.05;
-  }
-
-  .gk-snackbar__subtitle-wrap {
-    overflow: visible;
-    height: auto;
-    min-height: 20px;
-    display: grid;
+    font-size: 1.3rem;
   }
 
   .gk-snackbar__subtitle {
-    position: static;
-    inset: auto;
-    display: block;
-    overflow: visible;
-    white-space: nowrap;
-
-    line-height: 18px;
-    padding: 0;
-    grid-area: 1 / 1;
-    font-size: clamp(11px, 2.95vw, 14px);
-    max-width: none;
-  }
-
-  .gk-snackbar__right {
-    min-width: 0;
-    height: 100%;
-    padding-bottom: 0;
-    align-self: stretch;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    font-size: .85rem;
   }
 
   .gk-snackbar__nav {
-    justify-content: flex-start;
-    flex-wrap: nowrap;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
-    padding-top: 0;
-    padding-right: 0;
-  }
-
-  .gk-snackbar__navrow {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: flex-start;
-    gap: 8px;
-    padding-top: 0;
-    padding-right: 0;
-    opacity: 1 !important;
-    transform: none !important;
-    animation: none !important;
-  }
-
-  .gk-snackbar__more {
-    display: none;
+    gap: 14px;
   }
 
   .gk-snackbar__btn {
-    width: max-content;
-    font-size: 19.5px;
-    line-height: 1.26;
-    padding: 0;
+    font-size: .9rem;
   }
+}
 
-  .gk-snackbar__icons {
-    display: flex;
-    margin-top: auto;
-    margin-bottom: 16px;
+@media (max-width: 520px) {
+  .gk-snackbar__inner {
+    align-items: flex-start;
+    flex-direction: column;
     gap: 10px;
-
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(10px);
-    will-change: opacity, transform;
+    padding: 13px 17px 10px;
   }
 
-  .gk-snackbar[data-state="visible"][data-intro="1"] .gk-snackbar__icons {
-    animation: gkMobileIconsEnter var(--gk-popup-nav-duration) ease both;
-    animation-delay: var(--gk-popup-nav-delay);
+  .gk-snackbar__title {
+    font-size: 1.25rem;
   }
 
-  .gk-snackbar[data-state="visible"]:not([data-intro="1"]) .gk-snackbar__icons {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
+  .gk-snackbar__subtitle {
+    font-size: .82rem;
   }
 
-  .gk-popup-shell:not([data-docked="1"]) .gk-snackbar[data-state="visible"] .gk-snackbar__icons {
-    pointer-events: auto;
+  .gk-snackbar__nav {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 25px;
   }
 
-  .gk-popup-shell[data-docked="1"] .gk-snackbar__icons {
-    opacity: 0 !important;
-    transform: translateY(6px);
-    pointer-events: none !important;
-    animation: none;
+  .gk-snackbar__btn {
+    padding: 5px 0 8px;
+    font-size: .88rem;
   }
+}
 
-  @keyframes gkMobileIconsEnter {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .gk-snackbar__icons a {
-    padding: 7px 9px;
-    font-size: 16px;
-  }
-
-  .gk-snackbar__footer {
-    display: none;
-  }
-
-  .gk-snackbar:hover .gk-snackbar__left {
-    transform: none;
+@media (prefers-reduced-motion: reduce) {
+  .gk-snackbar,
+  .gk-snackbar *,
+  .gk-snackbar *::before,
+  .gk-snackbar *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
 }

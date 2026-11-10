@@ -1,0 +1,289 @@
+
+/* =========================================
+   GLOBAL PAGE LAYOUT
+========================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+
+  min-height: 100%;
+
+  overflow-x: clip;
+  scroll-behavior: smooth;
+
+  background: #060814;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+
+  min-height: 100vh;
+
+  overflow-x: clip;
+
+  background: #060814;
+  color: #f8fafc;
+}
+
+/* =========================================
+   PAGE WRAPPER
+========================================= */
+
+.gk-page-content {
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+
+  margin: 0;
+  padding: 0;
+
+  background: #060814;
+}
+
+/* =========================================
+   STICKY NAVIGATION
+========================================= */
+
+/*
+  The navigation overlays the hero.
+
+  Its negative bottom margin prevents it
+  from consuming vertical space in the
+  initial viewport.
+*/
+
+#site-navigation {
+  position: sticky;
+  top: 0;
+
+  z-index: 1000;
+
+  width: 100%;
+
+  margin: 0 0 -100px;
+  padding: 0;
+}
+
+/* =========================================
+   FULLSCREEN SHOWCASE
+========================================= */
+
+.gk-showcase-panel {
+  position: relative;
+  isolation: isolate;
+
+  display: block;
+
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+
+  min-height: 0;
+
+  margin: 0;
+  padding: 0;
+
+  overflow: hidden;
+
+  border: 0;
+  border-radius: 0;
+
+  background: #000;
+  box-shadow: none;
+}
+
+/* Showcase mount element */
+
+#bg,
+.gk-showcase-panel__background {
+  position: absolute !important;
+
+  inset: 0 !important;
+
+  display: block;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  min-height: 0 !important;
+  max-height: none !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  overflow: hidden !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  background: #000;
+}
+
+/*
+  Prevent showcase-generated image elements
+  from expanding outside the hero.
+*/
+
+.gk-showcase-panel img,
+.gk-showcase-panel picture,
+.gk-showcase-panel video,
+.gk-showcase-panel canvas {
+  max-width: none;
+}
+
+/* =========================================
+   SOCIAL BAND
+========================================= */
+
+.gk-social-band {
+  position: relative !important;
+
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+
+  z-index: 2;
+
+  display: block;
+
+  width: 100%;
+
+  margin: 0;
+  padding: 20px 24px;
+
+  transform: none !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(15, 18, 34, .96),
+      rgba(8, 10, 22, .96)
+    );
+
+  border-top: 1px solid rgba(255, 255, 255, .12);
+  border-bottom: 1px solid rgba(255, 255, 255, .12);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.gk-social-band__inner {
+  position: relative !important;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  gap: 32px;
+
+  width: 100%;
+  max-width: 1180px;
+
+  margin: 0 auto;
+  padding: 0;
+
+  transform: none !important;
+}
+
+.gk-social-band a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: rgba(248, 250, 252, .85);
+  font-size: 1.5rem;
+
+  text-decoration: none;
+
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.gk-social-band a:hover {
+  color: #a78bfa;
+  transform: translateY(-3px);
+}
+
+.gk-social-band a:focus-visible {
+  outline: 2px solid #a78bfa;
+  outline-offset: 5px;
+  border-radius: 4px;
+}
+
+/* =========================================
+   MAIN CONTENT
+========================================= */
+
+#main-content {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 0;
+
+  width: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  background: #060814;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+  #site-navigation {
+    margin-bottom: -90px;
+  }
+
+  .gk-social-band {
+    padding: 18px 16px;
+  }
+
+  .gk-social-band__inner {
+    gap: 24px;
+  }
+
+  .gk-social-band a {
+    font-size: 1.35rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #site-navigation {
+    margin-bottom: -85px;
+  }
+
+  .gk-social-band__inner {
+    gap: 20px;
+  }
+
+  .gk-social-band a {
+    font-size: 1.2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .gk-social-band a {
+    transition: none;
+  }
+}

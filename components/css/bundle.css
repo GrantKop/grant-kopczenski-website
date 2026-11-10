@@ -1,9 +1,40 @@
-@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css");
+@import url(
+  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+);
 
 @import url("/components/css/gk-img-showcase.css");
 @import url("/components/css/gk-snackbar.css");
-@import url("/components/css/gk-popup-panel.css");
+@import url("/components/css/gk-social-band.css");
 @import url("/components/css/gk-cards.css");
 @import url("/components/css/gk-project-about.css");
 @import url("/components/css/gk-options.css");
-@import url("/components/css/gk-mobile-alert.css");
+
+@import url("/components/css/gk-home-projects.css");
+@import url("/components/css/gk-home-layout.css");
+
+
+/* =========================================================
+   CUSTOM SCROLLBAR
+========================================================= */
+
+html {
+    scrollbar-width: thin;
+    scrollbar-color: #555 transparent;
+
+    ::-webkit-scrollbar {
+        width: 7px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #555;
+        border-radius: 999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: red;
+    }
+}
