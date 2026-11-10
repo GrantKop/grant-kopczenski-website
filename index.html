@@ -15,7 +15,7 @@
 
   <link
     rel="stylesheet"
-    href="/components/css/bundle.css"
+    href="/components/css/bundle.css?v=1.0.0"
   />
 </head>
 
@@ -196,19 +196,19 @@
   <script type="module">
     import {
       mountPopupMenu
-    } from "/components/js/gk-snackbar.js";
+    } from "/components/js/gk-snackbar.js?v=1.0.0";
 
     import {
       mountHomeProjects
-    } from "/components/js/gk-home-projects.js";
+    } from "/components/js/gk-home-projects.js?v=1.0.0";
 
     import {
       PANELS
-    } from "/components/js/gk-panels.js";
+    } from "/components/js/gk-panels.js?v=1.0.0";
 
     import {
       renderPanelByType
-    } from "/components/js/gk-panel-renderers.js";
+    } from "/components/js/gk-panel-renderers.js?v=1.0.0";
 
     mountPopupMenu({
       parent: document.getElementById("site-navigation"),
@@ -250,7 +250,7 @@
   <script type="module">
     import {
       startShowcase
-    } from "/components/js/gk-image-showcase.js";
+    } from "/components/js/gk-image-showcase.js?v=1.0.0";
 
     await startShowcase({
       parent: document.getElementById("bg"),

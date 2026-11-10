@@ -2,15 +2,15 @@
   "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 );
 
-@import url("/components/css/gk-img-showcase.css");
-@import url("/components/css/gk-snackbar.css");
-@import url("/components/css/gk-social-band.css");
-@import url("/components/css/gk-cards.css");
-@import url("/components/css/gk-project-about.css");
-@import url("/components/css/gk-options.css");
+@import url("/components/css/gk-img-showcase.css?v=1.0.0");
+@import url("/components/css/gk-snackbar.css?v=1.0.0");
+@import url("/components/css/gk-social-band.css?v=1.0.0");
+@import url("/components/css/gk-cards.css?v=1.0.0");
+@import url("/components/css/gk-project-about.css?v=1.0.0");
+@import url("/components/css/gk-options.css?v=1.0.0");
 
-@import url("/components/css/gk-home-projects.css");
-@import url("/components/css/gk-home-layout.css");
+@import url("/components/css/gk-home-projects.css?v=1.0.0");
+@import url("/components/css/gk-home-layout.css?v=1.0.0");
 
 
 /* =========================================================
