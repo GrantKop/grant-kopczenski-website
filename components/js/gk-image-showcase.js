@@ -108,6 +108,7 @@ export async function startShowcase(options) {
   function pause() { paused = true; stopTimer(); }
   function resume() { if (!paused) return; paused = false; startTimer(); }
 
+
   async function goTo(i) {
     if (!slides.length) return;
 
@@ -118,17 +119,17 @@ export async function startShowcase(options) {
     const incoming = topIsA ? b : a;
     const outgoing = topIsA ? a : b;
 
-    incoming.classList.add("is-thumb");
-    await setSrcDecoded(incoming, slide.thumb);
-    void incoming.offsetWidth;
+    // Decode the full image before displaying it.
+    await setSrcDecoded(incoming, slide.full);
 
+    if (myToken !== navToken) return;
+
+    // Begin the crossfade only after decoding.
+    incoming.classList.remove("is-thumb");
     incoming.classList.add("is-visible");
     outgoing.classList.remove("is-visible");
-    topIsA = !topIsA;
 
-    await setSrcDecoded(incoming, slide.full);
-    if (myToken !== navToken) return;
-    incoming.classList.remove("is-thumb");
+    topIsA = !topIsA;
 
     warmNeighbors();
   }
