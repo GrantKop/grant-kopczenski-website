@@ -48,6 +48,7 @@ export function mountPopupMenu(options = {}) {
   nav.setAttribute("aria-label", "Main navigation");
 
   const links = [
+    // { label: "About", href: "#about" },
     { label: "Projects", href: "#projects" },
     { label: "Photos", href: "#photos" },
     { label: "3D Prints", href: "#prints" },
