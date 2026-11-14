@@ -61,9 +61,379 @@ export function mountPopupMenu(options = {}) {
     nav.appendChild(a);
   }
 
-  inner.append(identity, nav);
+  // =========================================
+  // MOBILE MENU BUTTON
+  // =========================================
+
+  const menuToggle = document.createElement("button");
+
+  menuToggle.className = "gk-snackbar__menu-toggle";
+  menuToggle.type = "button";
+
+  menuToggle.setAttribute("aria-label", "Open navigation");
+  menuToggle.setAttribute("aria-expanded", "false");
+  menuToggle.setAttribute("aria-controls", "gk-mobile-nav");
+
+  menuToggle.innerHTML = `
+    <span class="gk-snackbar__menu-line"></span>
+    <span class="gk-snackbar__menu-line"></span>
+    <span class="gk-snackbar__menu-line"></span>
+  `;
+
+  nav.id = "gk-mobile-nav";
+
+  inner.append(identity, menuToggle, nav);
   el.appendChild(inner);
   opts.parent.appendChild(el);
+
+  /* =========================================
+     MOBILE MENU INTERACTIONS
+  ========================================= */
+
+  let menuOpen = false;
+
+  function setMenuOpen(open) {
+    menuOpen = open;
+
+    el.classList.toggle("is-menu-open", open);
+
+    menuToggle.setAttribute(
+      "aria-expanded",
+      String(open)
+    );
+
+    menuToggle.setAttribute(
+      "aria-label",
+      open ? "Close navigation" : "Open navigation"
+    );
+  }
+
+  function toggleMenu() {
+    setMenuOpen(!menuOpen);
+  }
+
+  function onDocumentClick(event) {
+    if (
+      menuOpen &&
+      !el.contains(event.target)
+    ) {
+      setMenuOpen(false);
+    }
+  }
+
+  function onDocumentKeydown(event) {
+    if (event.key === "Escape" && menuOpen) {
+      setMenuOpen(false);
+      menuToggle.focus();
+    }
+  }
+
+  menuToggle.addEventListener("click", toggleMenu);
+
+  nav.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      setMenuOpen(false);
+    });
+  });
+
+  document.addEventListener(
+    "pointerdown",
+    onDocumentClick
+  );
+
+  document.addEventListener(
+    "keydown",
+    onDocumentKeydown
+  );
+
+  /* =========================================
+     MOBILE SCROLL POSITIONING
+  ========================================= */
+
+  const mobileBreakpoint = window.matchMedia(
+    "(max-width: 760px)"
+  );
+
+  function updateMobileNavigation() {
+    const styles = getComputedStyle(el);
+
+    const offset =
+      parseFloat(
+        styles.getPropertyValue(
+          "--gk-mobile-bottom-offset"
+        )
+      ) || 16;
+
+    // The navbar's height stays constant
+    // regardless of whether it's docked.
+    const navbarHeight = el.offsetHeight;
+
+    // Initial position at the bottom
+    // of the viewport / hero.
+    const startY = Math.max(
+      0,
+      window.innerHeight - navbarHeight - offset
+    );
+
+    const scrollY = Math.max(0, window.scrollY);
+
+    // Move upward exactly one pixel
+    // for each pixel scrolled.
+    //
+    // Once the navbar reaches the top,
+    // prevent it from moving any farther.
+    const currentY = Math.max(
+      0,
+      startY - scrollY
+    );
+
+    el.style.setProperty(
+      "--gk-mobile-y",
+      `${currentY}px`
+    );
+
+    const isDocked = currentY <= 0;
+
+    const layout = isDocked
+      ? "docked"
+      : "floating";
+
+    if (el.dataset.layout !== layout) {
+      el.dataset.layout = layout;
+    }
+  }
+
+  /* =========================================
+     SCROLL-DRIVEN NAVIGATION
+  ========================================= */
+
+  let scrollTicking = false;
+  let resizeTicking = false;
+  let measured = false;
+
+  let identityStart = { x: 0, y: 0 };
+  let navigationStart = { x: 0, y: 0 };
+
+  const clamp = (value, min, max) =>
+    Math.min(max, Math.max(min, value));
+
+  function getFloatingOffset() {
+    return (
+      parseFloat(
+        getComputedStyle(el).getPropertyValue(
+          "--gk-nav-float-offset"
+        )
+      ) || 28
+    );
+  }
+
+  function measureNavigation() {
+
+    if (mobileBreakpoint.matches) {
+      measured = false;
+      updateMobileNavigation();
+      return;
+    }
+
+    // Temporarily put both cards into their
+    // original docked positions for measurement.
+
+    el.style.setProperty("--gk-identity-x", "0px");
+    el.style.setProperty("--gk-identity-y", "0px");
+
+    el.style.setProperty("--gk-navigation-x", "0px");
+    el.style.setProperty("--gk-navigation-y", "0px");
+
+    const identityRect = identity.getBoundingClientRect();
+    const navigationRect = nav.getBoundingClientRect();
+
+    const snackbarRect = el.getBoundingClientRect();
+
+    const identityLeft =
+      identityRect.left - snackbarRect.left;
+      
+    const identityBottom =
+      identityRect.bottom - snackbarRect.top;
+      
+    const navigationRight =
+      navigationRect.right - snackbarRect.left;
+      
+    const navigationBottom =
+      navigationRect.bottom - snackbarRect.top;
+
+    const offset = getFloatingOffset();
+
+    const mobileLift =
+      parseFloat(
+        getComputedStyle(el).getPropertyValue(
+          "--gk-nav-mobile-lift"
+        )
+      ) || 0;
+
+    // Position both bubbles at the bottom
+    // corners of the initial viewport.
+
+    identityStart = {
+      x: offset + 18 - identityLeft,
+    
+      y:
+        window.innerHeight -
+        offset -
+        14 -
+        identityBottom,
+    };
+
+    navigationStart = {
+      x:
+        window.innerWidth -
+        offset -
+        14 -
+        navigationRight,
+    
+      y:
+        window.innerHeight -
+        offset -
+        12 -
+        navigationBottom,
+    };
+
+    measured = true;
+
+    updateNavigation();
+  }
+
+  function updateNavigation() {
+    if (mobileBreakpoint.matches) {
+      updateMobileNavigation();
+      return;
+    }
+
+    if (!measured) return;
+
+    const scroll = Math.max(0, window.scrollY);
+
+    // Each card moves upward with scrolling.
+    // Once it reaches its navbar position,
+    // the vertical offset stops at zero.
+
+    const identityY = Math.max(
+      0,
+      identityStart.y - scroll
+    );
+
+    const navigationY = Math.max(
+      0,
+      navigationStart.y - scroll
+    );
+
+    // Horizontal movement is proportional
+    // to the remaining vertical distance.
+
+    const identityRemaining =
+      identityStart.y > 0
+        ? identityY / identityStart.y
+        : 0;
+
+    const navigationRemaining =
+      navigationStart.y > 0
+        ? navigationY / navigationStart.y
+        : 0;
+
+    const identityX =
+      identityStart.x * identityRemaining;
+
+    const navigationX =
+      navigationStart.x * navigationRemaining;
+
+    // Apply GPU-friendly transforms.
+
+    el.style.setProperty(
+      "--gk-identity-x",
+      `${identityX}px`
+    );
+
+    el.style.setProperty(
+      "--gk-identity-y",
+      `${identityY}px`
+    );
+
+    el.style.setProperty(
+      "--gk-navigation-x",
+      `${navigationX}px`
+    );
+
+    el.style.setProperty(
+      "--gk-navigation-y",
+      `${navigationY}px`
+    );
+
+    // Overall merging progress.
+
+    const totalTravel = Math.max(
+      identityStart.y,
+      navigationStart.y,
+      1
+    );
+
+    const progress = clamp(
+      scroll / totalTravel,
+      0,
+      1
+    );
+
+    // Begin merging backgrounds during
+    // the final 20% of movement.
+
+    const mergeProgress = clamp(
+      (progress - 0.8) / 0.2,
+      0,
+      1
+    );
+
+    el.style.setProperty(
+      "--gk-shell-opacity",
+      mergeProgress
+    );
+
+    el.style.setProperty(
+      "--gk-bubble-opacity",
+      1 - mergeProgress
+    );
+
+    el.setAttribute(
+      "data-layout",
+      progress >= 1 ? "docked" : "floating"
+    );
+  }
+
+  function onScroll() {
+    if (scrollTicking) return;
+
+    scrollTicking = true;
+
+    requestAnimationFrame(() => {
+      updateNavigation();
+      scrollTicking = false;
+    });
+  }
+
+  function onResize() {
+    if (resizeTicking) return;
+
+    resizeTicking = true;
+
+    requestAnimationFrame(() => {
+      measureNavigation();
+      resizeTicking = false;
+    });
+  }
+
+  window.addEventListener("scroll", onScroll, {
+    passive: true,
+  });
+
+  window.addEventListener("resize", onResize);
+
 
   let subtitleTimer = null;
   let subtitleFirstTimer = null;
@@ -121,6 +491,7 @@ export function mountPopupMenu(options = {}) {
   function show() {
     el.setAttribute("data-state", "visible");
 
+    measureNavigation();
     startSubtitleCycle();
 
     introTimer = window.setTimeout(() => {
@@ -154,6 +525,21 @@ export function mountPopupMenu(options = {}) {
 
   function destroy() {
     stopSubtitleCycle();
+
+    menuToggle.removeEventListener("click", toggleMenu);
+
+    document.removeEventListener(
+      "pointerdown",
+      onDocumentClick
+    );
+
+    document.removeEventListener(
+      "keydown",
+      onDocumentKeydown
+    );
+
+    window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("resize", onResize);
 
     if (introTimer !== null) {
       clearTimeout(introTimer);

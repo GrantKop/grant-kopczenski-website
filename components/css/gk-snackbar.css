@@ -1,42 +1,61 @@
+/* =========================================
+   CONFIGURATION
+========================================= */
+
 :root {
   --gk-popup-bg: rgba(10, 12, 18, 0.72);
   --gk-popup-border: rgba(255, 255, 255, 0.14);
   --gk-popup-text: rgba(255, 255, 255, 0.95);
   --gk-popup-muted: rgba(255, 255, 255, 0.76);
   --gk-popup-shadow: 0 18px 55px rgba(0, 0, 0, 0.40);
-
   --gk-popup-text-duration: 1600ms;
+
+  --gk-nav-float-offset: 28px;
+  --gk-nav-float-radius: 18px;
 }
 
-/* The wrapper must be sticky, not the snackbar inside it. */
+/* =========================================
+   FIXED NAVIGATION LAYER
+========================================= */
+
 #site-navigation {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
+
   width: 100%;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
 }
 
-/* Navbar */
+/* =========================================
+   SNACKBAR SHELL / VISIBILITY
+========================================= */
 
 .gk-snackbar {
+  --gk-identity-x: 0px;
+  --gk-identity-y: 0px;
+  --gk-navigation-x: 0px;
+  --gk-navigation-y: 0px;
+  --gk-shell-opacity: 0;
+  --gk-bubble-opacity: 1;
+
   position: relative;
+  isolation: isolate;
   width: 100%;
   color: var(--gk-popup-text);
-  background: rgba(8, 10, 18, 0.82);
-  border-bottom: 1px solid var(--gk-popup-border);
-  box-shadow: var(--gk-popup-shadow);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  pointer-events: none;
 
   opacity: 1;
   transform: translateY(0);
-
-  transition:
-    opacity 500ms ease,
-    transform 700ms cubic-bezier(.22, 1, .36, 1),
-    background-color 620ms ease,
-    border-color 620ms ease,
-    box-shadow 620ms ease;
+  transition: opacity 500ms ease, transform 700ms cubic-bezier(.22, 1, .36, 1);
 }
 
 .gk-snackbar[data-state="hidden"] {
@@ -49,33 +68,71 @@
   transform: translateY(0);
 }
 
+/* Full-width background fades in as the desktop bubbles merge. */
+.gk-snackbar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(8, 10, 18, 0.82);
+  border-bottom: 1px solid var(--gk-popup-border);
+  box-shadow: var(--gk-popup-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  opacity: var(--gk-shell-opacity);
+  pointer-events: none;
+}
+
 .gk-snackbar__inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
   width: min(100%, 1500px);
   min-height: 100px;
   margin: 0 auto;
   padding: 17px clamp(22px, 4vw, 52px);
   box-sizing: border-box;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 32px;
+  pointer-events: none;
 }
 
+/* =========================================
+   IDENTITY / FLOATING LEFT BUBBLE
+========================================= */
+
 .gk-snackbar__identity {
-  min-width: 0;
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 7px;
+  min-width: 0;
+  transform: translate3d(var(--gk-identity-x), var(--gk-identity-y), 0);
+  will-change: transform;
+  pointer-events: auto;
 }
 
-/* Larger identity text */
+.gk-snackbar__identity::before {
+  content: "";
+  position: absolute;
+  inset: -14px -18px;
+  z-index: -1;
+  background: var(--gk-popup-bg);
+  border: 1px solid var(--gk-popup-border);
+  border-radius: var(--gk-nav-float-radius);
+  box-shadow: var(--gk-popup-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  opacity: var(--gk-bubble-opacity);
+  pointer-events: none;
+}
 
 .gk-snackbar__title {
   color: var(--gk-popup-text);
-  font-size: clamp(1.45rem, 2.5vw, 1.85rem);
-  line-height: 1.15;
+  font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+  line-height: 1;
   font-weight: 750;
   letter-spacing: .015em;
   white-space: nowrap;
@@ -91,11 +148,10 @@
 .gk-snackbar__subtitle {
   grid-area: 1 / 1;
   color: var(--gk-popup-muted);
-  font-size: clamp(.9rem, 1.3vw, 1.05rem);
-  line-height: 1.3;
+  font-size: clamp(1.1rem, 1.3vw, 1.3rem);
+  line-height: 1.2;
   font-weight: 450;
   white-space: nowrap;
-
   transition:
     opacity var(--gk-popup-text-duration) ease,
     transform var(--gk-popup-text-duration) ease;
@@ -106,11 +162,7 @@
   transform: translateY(12px);
 }
 
-/* Subtitle cycling */
-
-.gk-snackbar[data-subtitle="b"] .gk-snackbar__subtitle:not(
-  .gk-snackbar__subtitle--secondary
-) {
+.gk-snackbar[data-subtitle="b"] .gk-snackbar__subtitle:not(.gk-snackbar__subtitle--secondary) {
   opacity: 0;
   transform: translateY(-12px);
 }
@@ -120,14 +172,37 @@
   transform: translateY(0);
 }
 
-/* Navigation links */
+/* =========================================
+   NAV LINKS / FLOATING RIGHT BUBBLE
+========================================= */
 
 .gk-snackbar__nav {
+  position: relative;
+  isolation: isolate;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: clamp(16px, 2vw, 30px);
   flex-shrink: 0;
+  transform: translate3d(var(--gk-navigation-x), var(--gk-navigation-y), 0);
+  will-change: transform;
+  pointer-events: auto;
+}
+
+.gk-snackbar__nav::before {
+  content: "";
+  position: absolute;
+  inset: -12px -14px;
+  z-index: -1;
+  background: var(--gk-popup-bg);
+  border: 1px solid var(--gk-popup-border);
+  border-radius: var(--gk-nav-float-radius);
+  box-shadow: var(--gk-popup-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  opacity: var(--gk-bubble-opacity);
+  pointer-events: none;
 }
 
 .gk-snackbar__btn {
@@ -135,17 +210,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 3px;
-
+  padding: 10px;
   color: var(--gk-popup-muted);
-  font-size: 1rem;
+  font-size: 2.2rem;
   font-weight: 650;
   text-decoration: none;
   white-space: nowrap;
-
-  transition:
-    color 180ms ease,
-    transform 180ms ease;
+  transition: color 180ms ease, transform 180ms ease;
 }
 
 .gk-snackbar__btn::after {
@@ -156,14 +227,13 @@
   bottom: 3px;
   height: 2px;
   border-radius: 2px;
-
-  background: linear-gradient(90deg, #7c3aed, #22d3ee);
-
+  background: rgba(255, 255, 255, 1);
   transform: scaleX(0);
   transform-origin: center;
   transition: transform 220ms ease;
 }
 
+.gk-snackbar__btn:focus-visible,
 .gk-snackbar__btn:hover {
   color: #fff;
   transform: translateY(-2px);
@@ -174,15 +244,9 @@
   transform: scaleX(1);
 }
 
-.gk-snackbar__btn:focus-visible {
-  outline: 2px solid #a78bfa;
-  outline-offset: 5px;
-  border-radius: 4px;
-}
-
-/* Text entrance animations.
-   These now run when the navbar becomes visible, not when it is
-   initially inserted into the DOM while hidden. */
+/* =========================================
+   INTRO ANIMATIONS
+========================================= */
 
 .gk-snackbar[data-state="visible"][data-intro="1"] .gk-snackbar__title {
   animation: gk-nav-title-in 1100ms cubic-bezier(.16, 1, .3, 1) both;
@@ -192,103 +256,254 @@
   animation: gk-nav-subtitle-in 1250ms cubic-bezier(.16, 1, .3, 1) 180ms both;
 }
 
-.gk-snackbar[data-state="visible"][data-intro="1"] .gk-snackbar__nav {
-  animation: gk-nav-links-in 1250ms cubic-bezier(.16, 1, .3, 1) 350ms both;
-}
+/* Do not animate the nav's transform: JS owns its desktop position. */
 
 @keyframes gk-nav-title-in {
-  from {
-    opacity: 0;
-    transform: translateY(-28px);
-    filter: blur(5px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
+  from { opacity: 0; transform: translateY(-28px); filter: blur(5px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
 @keyframes gk-nav-subtitle-in {
-  from {
-    opacity: 0;
-    transform: translateY(-18px);
-    filter: blur(4px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
+  from { opacity: 0; transform: translateY(-18px); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
-@keyframes gk-nav-links-in {
-  from {
-    opacity: 0;
-    transform: translateY(-16px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Hidden on desktop. */
+.gk-snackbar__menu-toggle {
+  display: none;
 }
 
-/* Responsive */
+/* =========================================
+   MOBILE / TABLET (760px AND BELOW)
+========================================= */
 
 @media (max-width: 760px) {
+  :root {
+    --gk-nav-float-offset: 16px;
+    --gk-mobile-bottom-offset: 16px;
+    --gk-mobile-nav-radius: 16px;
+  }
+
+  /* Single mobile bar; the desktop cards are disabled. */
+  .gk-snackbar {
+    --gk-mobile-y: 0px;
+    width: calc(100% - var(--gk-mobile-bottom-offset) * 2);
+    margin: 0 var(--gk-mobile-bottom-offset);
+    border-radius: var(--gk-mobile-nav-radius);
+    overflow: visible;
+    pointer-events: auto;
+    transition: opacity 500ms ease, border-radius 250ms ease;
+  }
+
+  .gk-snackbar[data-state="visible"] {
+    transform: translate3d(0, var(--gk-mobile-y), 0);
+  }
+
+  /* Keep width/height consistent on docking, avoiding a scroll snap. */
+  .gk-snackbar[data-layout="docked"] {
+    border-radius: var(--gk-mobile-nav-radius);
+  }
+
+  .gk-snackbar::before {
+    opacity: 1;
+    border-radius: inherit;
+  }
+
   .gk-snackbar__inner {
-    min-height: 88px;
-    padding: 14px 20px;
+    width: 100%;
+    max-width: none;
+    min-height: 76px;
+    padding: 12px 18px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     gap: 16px;
   }
 
+  .gk-snackbar__identity {
+    flex: 1;
+    min-width: 0;
+    gap: 5px;
+    transform: none;
+    will-change: auto;
+  }
+
+  .gk-snackbar__identity::before,
+  .gk-snackbar__nav::before {
+    display: none;
+  }
+
   .gk-snackbar__title {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    line-height: 1.2;
+  }
+
+  .gk-snackbar__subtitle-wrap {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
   }
 
   .gk-snackbar__subtitle {
-    font-size: .85rem;
+    font-size: .78rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
+  /* Hamburger */
+  .gk-snackbar__menu-toggle {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    padding: 10px;
+    border: 1px solid var(--gk-popup-border);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .06);
+    color: var(--gk-popup-text);
+    cursor: pointer;
+    pointer-events: auto;
+    transition: background-color 200ms ease, border-color 200ms ease;
+  }
+
+  .gk-snackbar__menu-toggle:hover {
+    background: rgba(255, 255, 255, .12);
+    border-color: rgba(255, 255, 255, .25);
+  }
+
+  .gk-snackbar__menu-toggle:focus-visible {
+    outline: 2px solid #a78bfa;
+    outline-offset: 3px;
+  }
+
+  .gk-snackbar__menu-line {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transform-origin: center;
+    transition: transform 280ms ease, opacity 180ms ease;
+  }
+
+  .gk-snackbar.is-menu-open .gk-snackbar__menu-line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .gk-snackbar.is-menu-open .gk-snackbar__menu-line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .gk-snackbar.is-menu-open .gk-snackbar__menu-line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* Popup menu: above floating bar, below docked bar. */
   .gk-snackbar__nav {
-    gap: 14px;
+    position: absolute;
+    top: auto;
+    right: 0;
+    bottom: calc(100% + 10px);
+    left: auto;
+    z-index: 10;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    width: min(280px, 100%);
+    padding: 12px;
+    gap: 4px;
+    background: rgba(10, 12, 18, .96);
+    border: 1px solid var(--gk-popup-border);
+    border-radius: 16px;
+    box-shadow: var(--gk-popup-shadow);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transform: none;
+    will-change: auto;
+    pointer-events: auto;
+  }
+
+  .gk-snackbar[data-layout="docked"] .gk-snackbar__nav {
+    top: calc(100% + 10px);
+    bottom: auto;
+  }
+
+  .gk-snackbar.is-menu-open .gk-snackbar__nav {
+    display: flex;
+  }
+
+  .gk-snackbar[data-layout="floating"].is-menu-open .gk-snackbar__nav {
+    animation: gk-mobile-menu-up 240ms cubic-bezier(.22, 1, .36, 1) both;
+  }
+
+  .gk-snackbar[data-layout="docked"].is-menu-open .gk-snackbar__nav {
+    animation: gk-mobile-menu-in 240ms cubic-bezier(.22, 1, .36, 1) both;
   }
 
   .gk-snackbar__btn {
-    font-size: .9rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    transform: none;
+  }
+
+  .gk-snackbar__btn:hover {
+    background: rgba(255, 255, 255, .07);
+    transform: none;
+  }
+
+  .gk-snackbar__btn::after {
+    left: 16px;
+    right: auto;
+    width: 35px;
+    bottom: 7px;
+  }
+
+  @keyframes gk-mobile-menu-up {
+    from { opacity: 0; transform: translateY(8px) scale(.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes gk-mobile-menu-in {
+    from { opacity: 0; transform: translateY(-8px) scale(.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
   }
 }
+
+/* =========================================
+   SMALL PHONES (520px AND BELOW)
+========================================= */
 
 @media (max-width: 520px) {
   .gk-snackbar__inner {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 10px;
-    padding: 13px 17px 10px;
+    min-height: 72px;
+    padding: 12px 14px;
+    gap: 12px;
   }
 
   .gk-snackbar__title {
-    font-size: 1.25rem;
+    font-size: 1.05rem;
   }
 
   .gk-snackbar__subtitle {
-    font-size: .82rem;
-  }
-
-  .gk-snackbar__nav {
-    width: 100%;
-    justify-content: flex-start;
-    gap: 25px;
-  }
-
-  .gk-snackbar__btn {
-    padding: 5px 0 8px;
-    font-size: .88rem;
+    font-size: .72rem;
   }
 }
+
+/* =========================================
+   REDUCED MOTION
+========================================= */
 
 @media (prefers-reduced-motion: reduce) {
   .gk-snackbar,
@@ -299,4 +514,54 @@
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+
+  .gk-snackbar__identity,
+  .gk-snackbar__nav {
+    will-change: auto;
+  }
+}
+
+/* =========================================
+   MOBILE DOCKED NAVBAR
+========================================= */
+
+@media (max-width: 760px) {
+
+  /* Smooth transition between bubble and banner */
+
+  .gk-snackbar {
+    transition:
+      opacity 500ms ease,
+      width 300ms ease,
+      margin 300ms ease,
+      border-radius 300ms ease;
+  }
+
+  /* Floating: keep the bubble appearance */
+
+  .gk-snackbar[data-layout="floating"] {
+    width: calc(
+      100% - var(--gk-mobile-bottom-offset) * 2
+    );
+
+    margin: 0 var(--gk-mobile-bottom-offset);
+
+    border-radius: var(--gk-mobile-nav-radius);
+  }
+
+  /* Docked: expand into a full-width banner */
+
+  .gk-snackbar[data-layout="docked"] {
+    width: 100%;
+    margin: 0;
+
+    border-radius: 0;
+  }
+
+  /* Make the navbar background match */
+
+  .gk-snackbar[data-layout="docked"]::before {
+    border-radius: 0;
+  }
+
 }

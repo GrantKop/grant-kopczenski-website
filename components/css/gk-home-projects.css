@@ -32,7 +32,7 @@
   backdrop-filter: blur(26px) saturate(145%);
   -webkit-backdrop-filter: blur(26px) saturate(145%);
 
-  scroll-margin-top: 110px;
+  scroll-margin-top: 104px;
 }
 
 /* Ambient glass highlights */
@@ -334,6 +334,7 @@
 @media (max-width: 520px) {
   .gk-home-section {
     padding: 40px 16px;
+    scroll-margin-top: 72px;
   }
 
   .gk-home-section__heading {
