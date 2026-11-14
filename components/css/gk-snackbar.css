@@ -45,7 +45,7 @@
   --gk-bubble-opacity: 1;
 
   position: relative;
-  isolation: isolate;
+  /* isolation: isolate; */
   width: 100%;
   color: var(--gk-popup-text);
   background: transparent;
@@ -55,16 +55,18 @@
 
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 500ms ease, transform 700ms cubic-bezier(.22, 1, .36, 1);
+  transition: transform 700ms cubic-bezier(.22, 1, .36, 1);
 }
 
 .gk-snackbar[data-state="hidden"] {
-  opacity: 0;
-  transform: translateY(-110%);
+  opacity: 1;
+  visibility: hidden;
+  transform: translateY(110%);
 }
 
 .gk-snackbar[data-state="visible"] {
   opacity: 1;
+  visibility: visible;
   transform: translateY(0);
 }
 
@@ -103,7 +105,7 @@
 
 .gk-snackbar__identity {
   position: relative;
-  isolation: isolate;
+  /* isolation: isolate; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -119,12 +121,15 @@
   position: absolute;
   inset: -14px -18px;
   z-index: -1;
+  
   background: var(--gk-popup-bg);
   border: 1px solid var(--gk-popup-border);
   border-radius: var(--gk-nav-float-radius);
   box-shadow: var(--gk-popup-shadow);
+
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
+
   opacity: var(--gk-bubble-opacity);
   pointer-events: none;
 }
@@ -178,7 +183,7 @@
 
 .gk-snackbar__nav {
   position: relative;
-  isolation: isolate;
+  /* isolation: isolate; */
   z-index: 1;
   display: flex;
   align-items: center;
@@ -195,12 +200,15 @@
   position: absolute;
   inset: -12px -14px;
   z-index: -1;
+
   background: var(--gk-popup-bg);
   border: 1px solid var(--gk-popup-border);
   border-radius: var(--gk-nav-float-radius);
   box-shadow: var(--gk-popup-shadow);
+
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
+
   opacity: var(--gk-bubble-opacity);
   pointer-events: none;
 }
@@ -249,23 +257,23 @@
 ========================================= */
 
 .gk-snackbar[data-state="visible"][data-intro="1"] .gk-snackbar__title {
-  animation: gk-nav-title-in 1100ms cubic-bezier(.16, 1, .3, 1) both;
+  animation: gk-nav-title-in 1100ms cubic-bezier(.16, 1, .3, 1) 50ms both;
 }
 
 .gk-snackbar[data-state="visible"][data-intro="1"] .gk-snackbar__subtitle-wrap {
-  animation: gk-nav-subtitle-in 1250ms cubic-bezier(.16, 1, .3, 1) 180ms both;
+  animation: gk-nav-subtitle-in 1100ms cubic-bezier(.16, 1, .3, 1) 250ms both;
 }
 
 /* Do not animate the nav's transform: JS owns its desktop position. */
 
 @keyframes gk-nav-title-in {
-  from { opacity: 0; transform: translateY(-28px); filter: blur(5px); }
-  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0);}
 }
 
 @keyframes gk-nav-subtitle-in {
-  from { opacity: 0; transform: translateY(-18px); filter: blur(4px); }
-  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* Hidden on desktop. */
