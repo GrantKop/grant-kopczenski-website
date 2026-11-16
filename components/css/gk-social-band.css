@@ -46,11 +46,11 @@
 .gk-social-band__inner a:hover {
   color: #fff;
   transform: translateY(-3px);
-  filter: drop-shadow(0 0 9px rgba(167, 139, 250, .55));
+  filter: drop-shadow(0 0 9px rgba(230, 230, 230, .5));
 }
 
 .gk-social-band__inner a:focus-visible {
-  outline: 2px solid #a78bfa;
+  outline: 2px solid #fff;
   outline-offset: 4px;
   border-radius: 5px;
 }

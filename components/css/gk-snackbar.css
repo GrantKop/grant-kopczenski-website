@@ -141,6 +141,7 @@
   font-weight: 750;
   letter-spacing: .015em;
   white-space: nowrap;
+  cursor: default;
 }
 
 .gk-snackbar__subtitle-wrap {
@@ -160,6 +161,7 @@
   transition:
     opacity var(--gk-popup-text-duration) ease,
     transform var(--gk-popup-text-duration) ease;
+  cursor: default;
 }
 
 .gk-snackbar__subtitle--secondary {

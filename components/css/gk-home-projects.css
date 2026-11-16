@@ -166,7 +166,8 @@
 
   padding: 10px 15px;
 
-  color: rgba(255, 255, 255, .9);
+  
+  color: rgba(255, 255, 255, .78);
 
   font: inherit;
   font-size: .9rem;
@@ -184,17 +185,29 @@
   transition:
     background 180ms ease,
     border-color 180ms ease,
-    transform 180ms ease;
+    filter 180ms ease,
+    transform 220ms ease;
 }
 
 .gk-home-projects__back:hover {
-  background: rgba(124, 58, 237, .24);
-  border-color: rgba(167, 139, 250, .6);
-  transform: translateY(-2px);
+  color: rgba(255, 255, 255, .9);
+  background: rgba(44, 46, 48, .55);
+  border-color: rgba(255, 255, 255, .5);
+}
+
+.gk-home-projects__back i {
+  display: inline-block;
+
+  transition: transform 220ms ease;
+}
+
+.gk-home-projects__back:hover i,
+.gk-home-projects__back:focus-visible i {
+  transform: translateX(-4px);
 }
 
 .gk-home-projects__back:focus-visible {
-  outline: 2px solid #a78bfa;
+  outline: 2px solid #fff;
   outline-offset: 3px;
 }
 
@@ -304,9 +317,6 @@
   color: rgba(255, 255, 255, .65);
 
   background: rgba(5, 7, 14, .96);
-
-  border-top:
-    1px solid rgba(255, 255, 255, .12);
 
   text-align: center;
   font-size: .85rem;
