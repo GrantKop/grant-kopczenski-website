@@ -103,6 +103,34 @@
 }
 
 /* =========================================
+   PROJECT HEADING ANIMATION
+========================================= */
+
+.gk-home-projects .gk-heading-animate {
+  animation:
+    gk-project-content-in
+    380ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+/* Disable initial panel entrance */
+
+.gk-home-projects__content.gk-no-animation {
+  animation: none;
+}
+
+/* Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .gk-home-projects .gk-heading-animate {
+    animation: none;
+  }
+
+  .gk-home-projects__content {
+    animation: none;
+  }
+}
+
+/* =========================================
    RENDERED SECTION CONTENT
 ========================================= */
 
@@ -150,13 +178,10 @@
   display: flex;
   align-items: center;
 
-  gap: 18px;
-
   margin: 0 0 28px;
   padding: 0 0 16px;
 
-  border-bottom:
-    1px solid rgba(255, 255, 255, .15);
+  border-bottom: 1px solid rgba(255, 255, 255, .15);
 }
 
 .gk-home-projects__back {
@@ -209,12 +234,6 @@
 .gk-home-projects__back:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 3px;
-}
-
-.gk-home-projects__current-title {
-  color: rgba(255, 255, 255, .78);
-  font-size: 1rem;
-  font-weight: 600;
 }
 
 .gk-home-projects__content {
@@ -286,6 +305,7 @@
   align-self: start;
 
   max-height: calc(100vh - 150px);
+  min-height: 100%;
 
   overflow-y: auto;
 }

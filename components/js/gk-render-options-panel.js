@@ -68,15 +68,6 @@ export async function renderOptionsPanel(panelConfig, { panelEl, panel }) {
       el.style.cursor = "default";
     }
 
-    const isClickable = o.href && o.href !== "#";
-    if (isClickable) {
-      el.href = o.href;
-    } else {
-      el.removeAttribute("href");
-      el.setAttribute("role", "article");
-      el.style.cursor = "default";
-    }
-
     grid.appendChild(el);
   }
 }
